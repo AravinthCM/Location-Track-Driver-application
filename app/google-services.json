@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "519121233855",
+    "firebase_url": "https://location-track-9e48a-default-rtdb.firebaseio.com",
+    "project_id": "location-track-9e48a",
+    "storage_bucket": "location-track-9e48a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519121233855:android:3530959ab69115c6f2e30a",
+        "android_client_info": {
+          "package_name": "com.example.driverapplicationtracky"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEq-XgboHuOEBuXL5H66sTIEggrC8P1cQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519121233855:android:9504cfa0cee129f6f2e30a",
+        "android_client_info": {
+          "package_name": "com.example.locationtrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEq-XgboHuOEBuXL5H66sTIEggrC8P1cQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
