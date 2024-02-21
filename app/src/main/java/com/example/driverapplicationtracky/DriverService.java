@@ -20,8 +20,13 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class DriverService extends AppCompatActivity {
 
@@ -115,13 +120,51 @@ public class DriverService extends AppCompatActivity {
     }
 
     private void pushLocationToFirebase(Location location) {
-        // Push the location to Firebase Realtime Database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference locationRef = database.getReference("user_location");
-        locationRef.setValue(location.getLatitude() + ", " + location.getLongitude());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userEmail = user.getEmail();
+
+            // Encode the email address to create a valid Firebase Database path
+            String encodedEmail = userEmail.replace(".", "_").replace("@", "_");
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference busesRef = database.getReference("Buses");
+
+            busesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot busSnapshot : dataSnapshot.getChildren()) {
+                        DataSnapshot driverSnapshot = busSnapshot.child("Driver");
+                        String storedEmail = driverSnapshot.child("email").getValue(String.class);
+
+                        if (storedEmail != null && storedEmail.equals(userEmail)) {
+                            // Email matches, update the location for the corresponding bus
+                            DatabaseReference driverLocationRef = busSnapshot.getRef()
+                                    .child("Location")
+                                    .child(encodedEmail); // Use encodedEmail as the node name
+
+                            driverLocationRef.child("latitude").setValue(location.getLatitude());
+                            driverLocationRef.child("longitude").setValue(location.getLongitude());
+
+                            Toast.makeText(DriverService.this, "Location updated", Toast.LENGTH_SHORT).show();
+                            return; // Break out of the loop once a match is found
+                        }
+                    }
+
+                    Toast.makeText(DriverService.this, "Invalid driver email", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors that may occur
+                    Toast.makeText(DriverService.this, "Error retrieving data", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
-    // Handle permission request results
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

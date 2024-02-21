@@ -19,10 +19,47 @@
         android:layout_marginBottom="10dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/getName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/getEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/getLatitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="latitude">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/getLongitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="longitude">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -45,16 +82,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/location"
+        android:id="@+id/submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
         android:layout_marginTop="10dp"/>
 
-    <TextView
-        android:id="@+id/regis"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Registered?"
-        android:gravity="center"/>
 </LinearLayout>
