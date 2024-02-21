@@ -19,21 +19,21 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class DriverRegistration extends AppCompatActivity {
 
-    TextInputLayout name,email,latitude,longitude,password;
+    TextInputLayout name, email, busNo, password;
     Button registerButton;
     FirebaseDatabase rootnode;
     DatabaseReference reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.driver_registration);
 
-        name=findViewById(R.id.getName);
-        email=findViewById(R.id.getEmail);
-        latitude=findViewById(R.id.getLatitude);
-        longitude=findViewById(R.id.getLongitude);
-        password=findViewById(R.id.getPassword);
-        registerButton=findViewById(R.id.submit);
+        name = findViewById(R.id.getName);
+        email = findViewById(R.id.getEmail);
+        busNo = findViewById(R.id.getBusNo);
+        password = findViewById(R.id.getPassword);
+        registerButton = findViewById(R.id.submit);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference driverRef = database.getReference("drivers");
@@ -46,25 +46,26 @@ public class DriverRegistration extends AppCompatActivity {
         });
     }
 
-    private void registerUser(){
+    private void registerUser() {
 
         String driverName = name.getEditText().getText().toString().trim();
         String driverEmail = email.getEditText().getText().toString().trim();
-        String driverLatitude = latitude.getEditText().getText().toString().trim();
-        String driverLongitude = longitude.getEditText().getText().toString().trim();
+        String driverBusNo = busNo.getEditText().getText().toString().trim();
         String driverPassword = password.getEditText().getText().toString().trim();
 
         rootnode = FirebaseDatabase.getInstance();
         reference = rootnode.getReference("drivers");
 
-            // Implement Firebase registration logic
+        if (!validateName() | !validateEmail() | !validatebusNo() | !validatePassword()) {
+
+        } else {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.getEditText().getText().toString(), password.getEditText().getText().toString())
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Registration success
-                                saveUserData(driverName, email.getEditText().getText().toString(), driverLatitude, driverLongitude, driverPassword);
+                                saveUserData(driverName, driverEmail, driverBusNo, driverPassword);
                                 Toast.makeText(DriverRegistration.this, "Registration successful", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(DriverRegistration.this, MainActivity.class));
                                 finish();
@@ -74,14 +75,14 @@ public class DriverRegistration extends AppCompatActivity {
                             }
                         }
                     });
+        }
     }
 
-    private void saveUserData(String name, String email, String latitude, String longitude, String password) {
+    private void saveUserData(String name, String email, String busNo, String password) {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("drivers");
-        DriverModel driver = new DriverModel(name, email, latitude, longitude, password);
+        DriverModel driver = new DriverModel(name, email, busNo, password);
         usersRef.child(userId).setValue(driver);
-        //driverRef.push().setValue(driver);
     }
 
 
@@ -99,41 +100,28 @@ public class DriverRegistration extends AppCompatActivity {
 
     private Boolean validateEmail() {
         String val = email.getEditText().getText().toString();
-       // String emailPattern = "^[a-zA-Z]+\\.(\\d+)@srec\\.ac\\.in$";   //
+        // String emailPattern = "^[a-zA-Z]+\\.(\\d+)@srec\\.ac\\.in$";   //
         if (val.isEmpty()) {
             email.setError("Field cannot be empty");
             return false;
         } /*else if (!val.matches(emailPattern)) {
         email.setError("Invalid email address");
             return false;
-        }*/
-        else {
+        }*/ else {
             email.setError(null);
             email.setErrorEnabled(false);
             return true;
         }
     }
 
-    private Boolean validateLat() {
-        String val = latitude.getEditText().getText().toString();
+    private Boolean validatebusNo() {
+        String val = busNo.getEditText().getText().toString();
         if (val.isEmpty()) {
-            latitude.setError("Field cannot be empty");
+            busNo.setError("Field cannot be empty");
             return false;
         } else {
-            latitude.setError(null);
-            latitude.setErrorEnabled(false);
-            return true;
-        }
-    }
-
-    private Boolean validatelong() {
-        String val = longitude.getEditText().getText().toString();
-        if (val.isEmpty()) {
-            longitude.setError("Field cannot be empty");
-            return false;
-        } else {
-            longitude.setError(null);
-            longitude.setErrorEnabled(false);
+            busNo.setError(null);
+            busNo.setErrorEnabled(false);
             return true;
         }
     }
@@ -144,18 +132,18 @@ public class DriverRegistration extends AppCompatActivity {
                 //"(?=.*[0-9])" +         //at least 1 digit
                 //"(?=.*[a-z])" +         //at least 1 lower case letter
                 //"(?=.*[A-Z])" +         //at least 1 upper case letter
-                //"(?=.*[a-zA-Z])" +      //any letter
+                "(?=.*[a-zA-Z])" +      //any letter
                 //"(?=.*[@#$%^&+=])" +    //at least 1 special character
-             //   "(?=\\S+$)" +           //no white spaces
+                   "(?=\\S+$)" +           //no white spaces
                 ".{4,}" +               //at least 4 characters
                 "$";
         if (val.isEmpty()) {
             password.setError("Field cannot be empty");
             return false;
-        }/* else if (!val.matches(passwordVal)) {
+        } else if (!val.matches(passwordVal)) {
             password.setError("Password is too weak");
             return false;
-        }*/ else {
+        } else {
             password.setError(null);
             password.setErrorEnabled(false);
             return true;
